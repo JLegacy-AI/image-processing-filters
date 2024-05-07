@@ -139,10 +139,8 @@ def SpatialDomainFilter(st):
 
     with content_col:
         if 'spatical_domain_filter' in st.session_state and st.session_state.spatical_domain_filter:
-            
             filter_func = spatial_filters[st.session_state.spatical_domain_filter]
-            filter_func(st)
-
+            filter_func(content_col)
         else:
             st.write("Select a filter from the right column to see results here.")
 

@@ -68,6 +68,6 @@ def HistogramTechnique(st):
     with content_col:
         if 'histogram_techniques' in st.session_state and st.session_state.histogram_techniques:  
             technique_func = histogram_techniques[st.session_state.histogram_techniques]
-            technique_func(st)
+            technique_func(content_col)
         else:
             st.write("Select a technique from the right column to see results here.")

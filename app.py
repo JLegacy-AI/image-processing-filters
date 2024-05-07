@@ -92,12 +92,12 @@ st.markdown(
             color: #ff4b4b;
         }
 
-        .st-emotion-cache-1v0mbdj.e115fcil1{
-            height: 90px;
-            width: 90px;
-            border-radius: 50%;
-            background-color: white;
-        }
+        # .st-emotion-cache-1v0mbdj.e115fcil1{
+        #     height: 90px;
+        #     width: 90px;
+        #     border-radius: 50%;
+        #     background-color: white;
+        # }
 
         .st-emotion-cache-1kyxreq.e115fcil2{
             display: flex;

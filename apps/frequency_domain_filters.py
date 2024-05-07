@@ -1,5 +1,5 @@
-import numpy as np
 import cv2
+import numpy as np
 from PIL import Image
 
 def_image = "./images/cat_image.jpeg"

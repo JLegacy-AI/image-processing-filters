@@ -1,6 +1,6 @@
 from PIL import Image
 import numpy as np
-from skimage import filters, exposure
+from skimage import exposure
 
 def_image = "./images/cat_image_1.jpeg"
 def_ref = "./images/car_d.jpeg"

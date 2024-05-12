@@ -1,6 +1,5 @@
 from PIL import Image
-from skimage import filters, io
-import streamlit as st
+from skimage import filters
 from skimage.color import rgba2rgb, rgb2gray
 import numpy as np
 

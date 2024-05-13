@@ -1,9 +1,14 @@
 from PIL import Image
 import numpy as np
-from skimage import exposure
+from skimage import exposure, data
 
 def_image = "./images/cat_image_1.jpeg"
 def_ref = "./images/car_d.jpeg"
+
+def_image_for_hm = data.chelsea()
+def_ref_for_hm = data.coffee()
+
+def_image_for_he = data.moon()
 
 def normalize_image(image):
     image_min = np.min(image)
@@ -14,9 +19,11 @@ def normalize_image(image):
 def histogramEquilizer(st):
     st.header("Histogram Equilizer")
     original_image = st.file_uploader("Upload an Image", type=["png", "jpg", "jpeg"])
-    original_image = def_image if original_image is None else original_image
-
-    image = Image.open(original_image)
+    
+    if original_image is not None:
+        image = Image.open(original_image)
+    else:
+        image = def_image_for_he
     img_array = np.array(image)
     output = exposure.equalize_hist(img_array)
 
@@ -27,14 +34,18 @@ def histogramEquilizer(st):
 def histogramMatching(st):
     st.header("Histogram Matching")
     original_image = st.file_uploader("Original Image", type=["png", "jpg", "jpeg"])
-    original_image = def_image if original_image is None else original_image
-
+    
     reference_image = st.file_uploader("Reference Image")
-    reference_image = def_ref if reference_image is None else reference_image
+    
+    if original_image is not None:
+        original_image = Image.open(original_image)
+    else:
+        original_image = def_image_for_hm
 
-    original_image = Image.open(original_image)
-    reference_image = Image.open(reference_image)
-
+    if reference_image is not None:
+        reference_image = Image.open(reference_image)
+    else:
+        reference_image = def_ref_for_hm
     original_array = np.array(original_image,dtype=np.float64)
     reference_array = np.array(reference_image,dtype=np.float64)
 

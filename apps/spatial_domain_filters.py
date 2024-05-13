@@ -1,17 +1,28 @@
 from PIL import Image
-from skimage import filters
+from skimage import filters, data
 from skimage.color import rgba2rgb, rgb2gray
 import numpy as np
 
-def_lowpass_image = "./images/boy.webp"
+def_lowpass_image = "./images/dragon.webp"
 
+def_image_for_laplacian = data.astronaut()
+def_image_for_sobel = data.checkerboard()
+def_image_for_lowpass = data.text()
+
+def normalize_image(image):
+    image_min = np.min(image)
+    image_max = np.max(image)
+    normalized_image = (image - image_min) / (image_max - image_min)
+    return normalized_image
 
 def laplacianFilter(st):
     st.header("Laplacian Filter")
     original_image = st.file_uploader("")
-    if original_image is None:
-        original_image = def_lowpass_image
-    original_image = Image.open(original_image)
+    
+    if original_image is not None:
+        original_image = Image.open(original_image)
+    else:
+        original_image = def_image_for_laplacian
     original_image = np.array(original_image)
     
     # If the image is RGBA, convert it to RGB
@@ -20,24 +31,29 @@ def laplacianFilter(st):
     
     kSize = st.slider("Kernal Size", min_value=3, max_value=10, step=1, value=3)
     
-    gray_image = rgb2gray(original_image)
-    laplacian_image = filters.laplace(gray_image, ksize=kSize)
+    laplacian_image = filters.laplace(original_image, ksize=kSize)
 
+    enhance_image = original_image + laplacian_image
+    laplacian_image = rgb2gray(laplacian_image)
     laplacian_image = np.clip(laplacian_image, 0,1)
 
     # Display results
     col1, col2 = st.columns(2)
     col1.image(original_image, use_column_width=True, caption="Original Image")
     col2.image(laplacian_image, use_column_width=True, caption="Laplacian Filtered Image")
-
+    
+    enhance_image = normalize_image(enhance_image)
+    st.image(enhance_image, use_column_width=True, caption="Enhance & Sharpened Image")
 
 def sobelFilter(st):
     st.header("Sobel Filter")
 
     original_image = st.file_uploader("")
-    if original_image is None:
-        original_image = def_lowpass_image
-    original_image = Image.open(original_image)
+
+    if original_image is not None:
+        original_image = Image.open(original_image)
+    else:
+        original_image = def_image_for_sobel
     original_image = np.array(original_image)
     
     # If the image is RGBA, convert it to RGB
@@ -45,8 +61,11 @@ def sobelFilter(st):
         original_image = rgba2rgb(original_image)
 
     # Convert to grayscale as Sobel operator requires a single channel image
-    gray_image = rgb2gray(original_image)
-    
+    if len(original_image.shape) > 2:
+        gray_image = rgb2gray(original_image)
+    else:
+        gray_image = original_image
+        
     # Apply Sobel filter
     edge_sobel_h = filters.sobel_h(gray_image)
     edge_sobel_v = filters.sobel_v(gray_image)
@@ -66,9 +85,11 @@ def sobelFilter(st):
 def lowpassGaussianFilter(st):
     st.header("Lowpass Gaussian Filter")
     original_image = st.file_uploader("")
-    if original_image is None:
-        original_image = def_lowpass_image
-    original_image = Image.open(original_image)
+
+    if original_image is not None:
+        original_image = Image.open(original_image)
+    else:
+        original_image = def_image_for_lowpass
     original_image = np.array(original_image)
     
     # If the image is RGBA, convert it to RGB

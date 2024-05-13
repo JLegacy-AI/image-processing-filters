@@ -162,7 +162,7 @@ def lowpassFilter(st):
     # Normalize the image to 0-255 and convert to uint8
     img_back = np.interp(img_back, (img_back.min(), img_back.max()), (0, 255)).astype(np.uint8)
     
-
+    
     col1, col2 = st.columns(2)
     col1.image(original_image_color, "Original Image", use_column_width=True)
     col2.image(img_back, "Lowpass Filtered Image", use_column_width=True)

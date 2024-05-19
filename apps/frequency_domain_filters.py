@@ -1,14 +1,16 @@
 import cv2
 import numpy as np
 from PIL import Image
+from skimage import filters
 
 def_image = "./images/cat_image.jpeg"
+def_bandpass_image = "./images/ultrasound_image.jpg"
+def_butterworth_image = "./images/mri_image.jpg"
 
 def bandpassFilter(st):
     st.header("Bandpass Filter")
-
     original_image = st.file_uploader("Upload an Image", type=["png", "jpg", "jpeg"])
-    original_image = def_image if original_image is None else original_image
+    original_image = def_bandpass_image if original_image is None else original_image
 
     # Open the image with PIL and convert to NumPy array
     original_image_color = Image.open(original_image)
@@ -16,8 +18,8 @@ def bandpassFilter(st):
     original_image = np.array(original_image)
 
     # Get user inputs for frequency cut-offs
-    low_freq = st.slider("Low Frequency Cut-off", 1, 100, 80)
-    high_freq = st.slider("High Frequency Cut-off", 1, 100, 5)
+    low_freq = st.slider("Low Frequency Cut-off", 1, 100, 78)
+    high_freq = st.slider("High Frequency Cut-off", 1, 100, 1)
     
     # FFT to convert the image to frequency domain
     dft = cv2.dft(np.float32(original_image), flags=cv2.DFT_COMPLEX_OUTPUT)
@@ -48,7 +50,8 @@ def bandpassFilter(st):
 def butterworthFilter(st):
     st.header("Butterworth Filter")
     original_image = st.file_uploader("Upload an Image", type=["png", "jpg", "jpeg"])
-    original_image = def_image if original_image is None else original_image
+    original_image = def_butterworth_image if original_image is None else original_image
+
 
     # Open the image with PIL and convert to NumPy array
     original_image_color = Image.open(original_image)
@@ -56,7 +59,7 @@ def butterworthFilter(st):
     original_image = np.array(original_image)
 
     # Get user input for the cutoff frequency and the order of the filter
-    cutoff = st.slider("Cutoff Frequency", min_value=10, max_value=100, value=30)
+    cutoff = st.slider("Cutoff Frequency", min_value=10, max_value=100, value=44)
     order = st.slider("Order of the Filter", min_value=1, max_value=10, value=2)
     
     # FFT to convert the image to the frequency domain
@@ -85,7 +88,7 @@ def butterworthFilter(st):
     
     col1, col2 = st.columns(2)
     col1.image(original_image_color, "Original Image", use_column_width=True)
-    col2.image(img_back, "Lowpass Filtered Image", use_column_width=True)
+    col2.image(img_back, "Filtered Image", use_column_width=True)
 
 
 def highpassFilter(st):
@@ -98,6 +101,7 @@ def highpassFilter(st):
     original_image_color = Image.open(original_image)
     original_image = Image.open(original_image).convert('L')  # Convert image to grayscale
     original_image = np.array(original_image)
+    original_image = filters.gaussian(original_image)
 
     # FFT to convert the image to the frequency domain
     dft = np.fft.fft2(original_image)
